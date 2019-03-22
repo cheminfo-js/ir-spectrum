@@ -1,4 +1,10 @@
+import { checkServerIdentity } from 'tls';
+
+import min from 'ml-array-min';
+import max from 'ml-array-max';
+
 import { toJSON } from './to/json';
+import { toAnnotations } from './to/annotations';
 
 /**
  * Class allowing manipulate one IR spectrum
@@ -13,36 +19,57 @@ export class IRSpectrum {
     this.wavelength = json.wavelength || [];
     this.absorbance = json.absorbance || [];
     this.transmittance = json.transmittance || [];
+    this.peaks = [];
+    check(this);
+  }
+
+  /**
+   *
+   * @param {Array} [peaks=[]] array of peaks. Peaks are composed of transmittance, wavelength, kind
+   */
+  setPeaks(peaks = []) {
+    this.peaks = peaks;
+  }
+
+  addPeak(targetWavelength, options = {}) {
+    const { range = 10 } = options;
+    let transmittance = Number.MAX_VALUE;
+    let absorbance = Number.MIN_VALUE;
+    let bestWavelength;
+    // we search the minimum based on wavelength +/- range
+    for (let i = 0; i < this.wavelength.length; i++) {
+      if (this.wavelength[i] - targetWavelength <= range) {
+        if (this.transmittance[i] < transmittance) {
+          transmittance = this.transmittance[i];
+          absorbance = this.absorbance[i];
+          bestWavelength = this.wavelength[i];
+        }
+      }
+    }
+    if (bestWavelength) {
+      // check if it does not exists yet
+      for (let peak of this.peaks) {
+        if (peak.wavelength === bestWavelength) return;
+      }
+      this.peaks.push({
+        wavelength: bestWavelength,
+        transmittance,
+        absorbance,
+        kind: getPeakKind(
+          transmittance,
+          this.minTransmittance,
+          this.maxTransmittance
+        )
+      });
+    }
   }
 
   getAbsorbance() {
-    if (this.absorbance.length > 0) {
-      return { x: this.wavelength, y: this.absorbance };
-    } else {
-      if (this.transmittance.length > 0) {
-        return {
-          x: this.wavelength,
-          y: this.transmittance.map((transmittance) => -Math.log10(transmittance))
-        };
-      } else {
-        return { x: [], y: [] };
-      }
-    }
+    return { x: this.wavelength, y: this.absorbance };
   }
 
   getTransmittance() {
-    if (this.transmittance.length > 0) {
-      return { x: this.wavelength, y: this.transmittance };
-    } else {
-      if (this.absorbance.length > 0) {
-        return {
-          x: this.wavelength,
-          y: this.absorbance.map((absorbance) => 10 ** -absorbance)
-        };
-      } else {
-        return { x: [], y: [] };
-      }
-    }
+    return { x: this.wavelength, y: this.transmittance };
   }
 
   getPercentTransmittance() {
@@ -71,3 +98,54 @@ export function getKind(kind = '') {
 }
 
 IRSpectrum.prototype.toJSON = toJSON;
+IRSpectrum.prototype.toAnnotations = toAnnotations;
+
+function check(irSpectrum) {
+  if (
+    irSpectrum.transmittance.length > 0 &&
+    irSpectrum.absorbance.length === 0
+  ) {
+    irSpectrum.absorbance = irSpectrum.transmittance.map(
+      (transmittance) => -Math.log10(transmittance)
+    );
+  }
+
+  if (
+    irSpectrum.absorbance.length > 0 &&
+    irSpectrum.transmittance.length === 0
+  ) {
+    irSpectrum.transmittance = irSpectrum.absorbance.map(
+      (absorbance) => 10 ** -absorbance
+    );
+  }
+
+  if (irSpectrum.wavelength.length > 0) {
+    irSpectrum.minWavelength = min(irSpectrum.wavelength);
+  }
+  if (irSpectrum.wavelength.length > 0) {
+    irSpectrum.maxWavelength = max(irSpectrum.wavelength);
+  }
+  if (irSpectrum.absorbance.length > 0) {
+    irSpectrum.minAbsorbance = min(irSpectrum.absorbance);
+  }
+  if (irSpectrum.absorbance.length > 0) {
+    irSpectrum.maxAbsorbance = max(irSpectrum.absorbance);
+  }
+  if (irSpectrum.transmittance.length > 0) {
+    irSpectrum.minTransmittance = min(irSpectrum.transmittance);
+  }
+  if (irSpectrum.transmittance.length > 0) {
+    irSpectrum.maxTransmittance = max(irSpectrum.transmittance);
+  }
+}
+
+function getPeakKind(transmittance, minTransmittance, maxTransmittance) {
+  var position =
+    (maxTransmittance - transmittance) / (maxTransmittance - minTransmittance);
+  if (position < 0.33) {
+    return 'w';
+  } else if (position < 0.66) {
+    return 'm';
+  }
+  return 'S';
+}

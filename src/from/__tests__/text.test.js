@@ -10,7 +10,11 @@ test('Parse a text', () => {
   let irSpectrum = fromText(text);
   expect(irSpectrum.wavelength).toStrictEqual([1, 2, 3]);
   expect(irSpectrum.transmittance).toStrictEqual([2, 3, 4]);
-  expect(irSpectrum.absorbance).toStrictEqual([]);
+  expect(irSpectrum.absorbance).toStrictEqual([
+    -0.3010299956639812,
+    -0.47712125471966244,
+    -0.6020599913279624
+  ]);
 });
 
 test('Parse a text with options', () => {
@@ -26,6 +30,6 @@ test('Parse a text with options', () => {
     kind: 'absorbance'
   });
   expect(irSpectrum.wavelength).toStrictEqual([2, 3, 4]);
-  expect(irSpectrum.transmittance).toStrictEqual([]);
+  expect(irSpectrum.transmittance).toStrictEqual([0.001, 0.0001, 0.00001]);
   expect(irSpectrum.absorbance).toStrictEqual([3, 4, 5]);
 });

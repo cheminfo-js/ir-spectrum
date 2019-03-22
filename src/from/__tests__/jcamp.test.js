@@ -9,7 +9,7 @@ test('fromJcamp absorbance', () => {
   const irSpectrum = fromJcamp(jcamp);
   expect(irSpectrum.wavelength).toHaveLength(1738);
   expect(irSpectrum.absorbance).toHaveLength(1738);
-  expect(irSpectrum.transmittance).toHaveLength(0);
+  expect(irSpectrum.transmittance).toHaveLength(1738);
 });
 
 test('fromJcamp transmittance', () => {
@@ -17,6 +17,6 @@ test('fromJcamp transmittance', () => {
   const jcamp = readFileSync(path, 'utf8');
   const irSpectrum = fromJcamp(jcamp);
   expect(irSpectrum.wavelength).toHaveLength(1991);
-  expect(irSpectrum.absorbance).toHaveLength(0);
+  expect(irSpectrum.absorbance).toHaveLength(1991);
   expect(irSpectrum.transmittance).toHaveLength(1991);
 });
