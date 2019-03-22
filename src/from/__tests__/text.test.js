@@ -1,5 +1,4 @@
 import { fromText } from '../..';
-import { ABSORBANCE, TRANSMITTANCE } from '../../IRSpectrum';
 
 test('Parse a text', () => {
   const text = `
@@ -10,8 +9,8 @@ test('Parse a text', () => {
 
   let irSpectrum = fromText(text);
   expect(irSpectrum.wavelength).toStrictEqual([1, 2, 3]);
-  expect(irSpectrum.y).toStrictEqual([2, 3, 4]);
-  expect(irSpectrum.kind).toBe(TRANSMITTANCE);
+  expect(irSpectrum.transmittance).toStrictEqual([2, 3, 4]);
+  expect(irSpectrum.absorbance).toStrictEqual([]);
 });
 
 test('Parse a text with options', () => {
@@ -24,8 +23,9 @@ test('Parse a text with options', () => {
   let irSpectrum = fromText(text, {
     xColumn: 1,
     yColumn: 2,
-    kind: ABSORBANCE
+    kind: 'absorbance'
   });
   expect(irSpectrum.wavelength).toStrictEqual([2, 3, 4]);
-  expect(irSpectrum.y).toStrictEqual([3, 4, 5]);
+  expect(irSpectrum.transmittance).toStrictEqual([]);
+  expect(irSpectrum.absorbance).toStrictEqual([3, 4, 5]);
 });

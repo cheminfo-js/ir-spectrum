@@ -11,15 +11,53 @@ import { toJSON } from './to/json';
 export class IRSpectrum {
   constructor(json = {}) {
     this.wavelength = json.wavelength || [];
-    this.y = json.y || [];
-    this.kind = getKind(json.kind);
+    this.absorbance = json.absorbance || [];
+    this.transmittance = json.transmittance || [];
+  }
+
+  getAbsorbance() {
+    if (this.absorbance.length > 0) {
+      return { x: this.wavelength, y: this.absorbance };
+    } else {
+      if (this.transmittance.length > 0) {
+        return {
+          x: this.wavelength,
+          y: this.transmittance.map((transmittance) => -Math.log10(transmittance))
+        };
+      } else {
+        return { x: [], y: [] };
+      }
+    }
+  }
+
+  getTransmittance() {
+    if (this.transmittance.length > 0) {
+      return { x: this.wavelength, y: this.transmittance };
+    } else {
+      if (this.absorbance.length > 0) {
+        return {
+          x: this.wavelength,
+          y: this.absorbance.map((absorbance) => 10 ** -absorbance)
+        };
+      } else {
+        return { x: [], y: [] };
+      }
+    }
+  }
+
+  getPercentTransmittance() {
+    let data = this.getTransmittance();
+    return {
+      x: data.x,
+      y: data.y.map((transmittance) => transmittance * 100)
+    };
   }
 }
 
 export const ABSORBANCE = 1;
 export const TRANSMITTANCE = 2;
 
-function getKind(kind = '') {
+export function getKind(kind = '') {
   if (typeof kind === 'number') {
     if (kind < 1 || kind > 2) {
       throw new Error('kind should either be 1 or 2');

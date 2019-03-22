@@ -5,7 +5,6 @@
 export function toJSON() {
   return {
     wavelength: this.wavelength,
-    y: this.y,
-    kind: this.kind
+    transmittance: this.transmittance
   };
 }
