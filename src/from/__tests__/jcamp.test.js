@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import { TRANSMITTANCE, ABSORBANCE } from '../../IRSpectrum';
 import { fromJcamp } from '../..';
 
 test('fromJcamp absorbance', () => {
