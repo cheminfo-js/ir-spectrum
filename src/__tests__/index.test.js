@@ -26,6 +26,7 @@ test('Test load / save json', () => {
     y: [-0.3010299956639812, -0.47712125471966244, -0.3010299956639812]
   });
   expect(json).toStrictEqual({
+    peaks: [],
     wavelength: [1, 2, 3],
     transmittance: [2, 3, 2]
   });

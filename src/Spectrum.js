@@ -5,15 +5,15 @@ import { TRANSMITTANCE, ABSORBANCE, PERCENT_TRANSMITTANCE } from './constants';
 import { toJSON } from './to/json';
 import { getAnnotations } from './jsgraph/getAnnotations';
 import { getData } from './jsgraph/getData';
-import { addPeak } from './addPeak';
-
+import { peakPicking } from './peakPicking';
+import { autoPeakPicking } from './autoPeakPicking';
 /**
  * Class allowing manipulate one IR spectrum
- * @class IRSpectrum
+ * @class spectrum
  * @param {object} [json={}] - object containing a spectrum
  * @param {Array} [json.wavelength=[]] - wavelength
  * @param {Array} [json.y=[]] - y values
- * @param {integer} [json.kind=IRSpectrum.TRANSMITTANCE] - either IRSpectrum.ABSORBANCE or IRSpectrum.TRANSMITTANCE
+ * @param {integer} [json.kind=spectrum.TRANSMITTANCE] - either spectrum.ABSORBANCE or spectrum.TRANSMITTANCE
  */
 export class Spectrum {
   constructor(json = {}) {
@@ -42,8 +42,8 @@ export class Spectrum {
     this.mode = mode;
   }
 
-  addPeak(targetWavelength, options = {}) {
-    addPeak(this, targetWavelength, options);
+  peakPicking(targetWavelength, options = {}) {
+    peakPicking(this, targetWavelength, options);
   }
 
   getAbsorbance() {
@@ -83,42 +83,39 @@ Spectrum.prototype.getAnnotations = function (options) {
 Spectrum.prototype.getData = function (options) {
   return getData(this, options);
 };
+Spectrum.prototype.autoPeakPicking = function (options) {
+  return autoPeakPicking(this, options);
+};
 
-function check(irSpectrum) {
-  if (
-    irSpectrum.transmittance.length > 0 &&
-    irSpectrum.absorbance.length === 0
-  ) {
-    irSpectrum.absorbance = irSpectrum.transmittance.map(
+function check(spectrum) {
+  if (spectrum.transmittance.length > 0 && spectrum.absorbance.length === 0) {
+    spectrum.absorbance = spectrum.transmittance.map(
       (transmittance) => -Math.log10(transmittance)
     );
   }
 
-  if (
-    irSpectrum.absorbance.length > 0 &&
-    irSpectrum.transmittance.length === 0
-  ) {
-    irSpectrum.transmittance = irSpectrum.absorbance.map(
+  if (spectrum.absorbance.length > 0 && spectrum.transmittance.length === 0) {
+    spectrum.transmittance = spectrum.absorbance.map(
       (absorbance) => 10 ** -absorbance
     );
   }
 
-  if (irSpectrum.wavelength.length > 0) {
-    irSpectrum.minWavelength = min(irSpectrum.wavelength);
+  if (spectrum.wavelength.length > 0) {
+    spectrum.minWavelength = min(spectrum.wavelength);
   }
-  if (irSpectrum.wavelength.length > 0) {
-    irSpectrum.maxWavelength = max(irSpectrum.wavelength);
+  if (spectrum.wavelength.length > 0) {
+    spectrum.maxWavelength = max(spectrum.wavelength);
   }
-  if (irSpectrum.absorbance.length > 0) {
-    irSpectrum.minAbsorbance = min(irSpectrum.absorbance);
+  if (spectrum.absorbance.length > 0) {
+    spectrum.minAbsorbance = min(spectrum.absorbance);
   }
-  if (irSpectrum.absorbance.length > 0) {
-    irSpectrum.maxAbsorbance = max(irSpectrum.absorbance);
+  if (spectrum.absorbance.length > 0) {
+    spectrum.maxAbsorbance = max(spectrum.absorbance);
   }
-  if (irSpectrum.transmittance.length > 0) {
-    irSpectrum.minTransmittance = min(irSpectrum.transmittance);
+  if (spectrum.transmittance.length > 0) {
+    spectrum.minTransmittance = min(spectrum.transmittance);
   }
-  if (irSpectrum.transmittance.length > 0) {
-    irSpectrum.maxTransmittance = max(irSpectrum.transmittance);
+  if (spectrum.transmittance.length > 0) {
+    spectrum.maxTransmittance = max(spectrum.transmittance);
   }
 }

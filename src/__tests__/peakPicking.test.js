@@ -14,7 +14,7 @@ describe('Test addPeaks', () => {
     let irSpectrum = fromText(text);
 
     expect(irSpectrum.peaks).toStrictEqual([]);
-    irSpectrum.addPeak(3);
+    irSpectrum.peakPicking(3);
     expect(irSpectrum.peaks).toStrictEqual([
       {
         absorbance: 0.3010299956639812,
@@ -29,7 +29,7 @@ describe('Test addPeaks', () => {
     let irSpectrum = fromText(text);
 
     irSpectrum.peaks = [];
-    irSpectrum.addPeak(3, { range: 10 });
+    irSpectrum.peakPicking(3, { range: 10 });
     expect(irSpectrum.peaks).toStrictEqual([
       {
         absorbance: 0.6989700043360187,
@@ -44,7 +44,7 @@ describe('Test addPeaks', () => {
     let irSpectrum = fromText(text);
 
     irSpectrum.peaks = [];
-    irSpectrum.addPeak(4, { range: 1 });
+    irSpectrum.peakPicking(4, { range: 1 });
     expect(irSpectrum.peaks).toStrictEqual([
       {
         absorbance: 0.3010299956639812,
@@ -58,8 +58,8 @@ describe('Test addPeaks', () => {
   it('test optimize', () => {
     let irSpectrum = fromText(text);
 
-    irSpectrum.addPeak(7, { optimize: true });
-    irSpectrum.addPeak(1, { optimize: true });
+    irSpectrum.peakPicking(7, { optimize: true });
+    irSpectrum.peakPicking(1, { optimize: true });
     expect(irSpectrum.peaks).toStrictEqual([
       {
         absorbance: 0.6989700043360187,
@@ -79,8 +79,8 @@ describe('Test addPeaks', () => {
   it('test duplicate', () => {
     let irSpectrum = fromText(text);
 
-    irSpectrum.addPeak(3, { range: 1 });
-    irSpectrum.addPeak(3, { optimize: true });
+    irSpectrum.peakPicking(3, { range: 1 });
+    irSpectrum.peakPicking(3, { optimize: true });
     expect(irSpectrum.peaks).toStrictEqual([
       {
         absorbance: 0.3010299956639812,

@@ -1,9 +1,9 @@
 # ir-spectrum
 
-  [![NPM version][npm-image]][npm-url]
-  [![build status][travis-image]][travis-url]
-  [![Test coverage][codecov-image]][codecov-url]
-  [![npm download][download-image]][download-url]
+[![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
+[![Test coverage][codecov-image]][codecov-url]
+[![npm download][download-image]][download-url]
 
 .
 
@@ -14,17 +14,37 @@
 ## Usage
 
 ```js
-import library from 'ir-spectrum';
+import IRSpectrum from 'ir-spectrum';
 
-const result = library(args);
-// result is ...
+let spectrum = IRSpectrum.fromJcamp(jcamp);
+
+// let spectrum = IRSpectrum.fromText(jcamp);
+
+spectrum.setPeaks([]);
+
+// if optimize is true, peak picking will find the best peak close to wavelength
+spectrum.peakPicking(wavelength, { range: 0, optimize: true });
+console.log(spectrum.peaks());
+
+spectrum.autoPeakPicking({
+  fromWavelength: 1500,
+  toWavelength: 4000,
+  noiseLvel: 0.01
+});
+
+// you may selecdt how you would like to retrieve the data
+// there are 3 modes: ABSORBANCE, TRANSMITTANCE or PERCENT_TRANSMITTANCE
+// those methods are very practical in coordination with www.jsgraph.org
+spectrum.setMode(IRSpectrum.ABSORBANCE);
+let annotations = spectrum.getAnnotations();
+let data = spectrum.getData();
 ```
 
 ## [API Documentation](https://cheminfo.github.io/ir-spectrum/)
 
 ## License
 
-  [MIT](./LICENSE)
+[MIT](./LICENSE)
 
 [npm-image]: https://img.shields.io/npm/v/ir-spectrum.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/ir-spectrum

@@ -1,40 +1,38 @@
 /**
  *
  * @param {Spectrum} spectrum
- * @param {number} targetWavelength
- * @param {object} [options]
- * @param {number} [options.range=0] Search in a range around the targetWavelength
- * @param {boolean} [options.optimize=false] Search for the closest peak to the targetWavelength
+ * @param {object} peak
  */
 
-export function addPeak(spectrum, targetWavelength, options = {}) {
-  const { range = 0, optimize = false } = options;
-
-  // find the peak that is the closest to the click
-  let bestPeak = getClosest(spectrum, targetWavelength);
-
-  if (optimize) {
-    findClosest(spectrum, bestPeak);
-  } else if (range) {
-    bestInRange(spectrum, bestPeak, targetWavelength, range);
+export function addPeak(spectrum, peak = {}) {
+  if (!peak.wavelength) {
+    throw new Error('addPeak: peak mush have wavelength property');
   }
-
-  // check if it does not exists yet
-  for (let peak of spectrum.peaks) {
-    if (Number(peak.wavelength) === Number(bestPeak.wavelength)) return peak;
+  if (!peak.absorbance && !peak.transmittance) {
+    throw new Error(
+      'addPeak: peak mush have either absorbance of transmittance property'
+    );
   }
+  const {
+    wavelength,
+    transmittance = 10 ** -peak.absorbance,
+    absorbance = -Math.log10(peak.transmittance)
+  } = peak;
 
+  for (let existing of spectrum.peaks) {
+    if (Number(existing.wavelength) === wavelength) return existing;
+  }
   spectrum.peaks.push({
-    wavelength: bestPeak.wavelength,
-    transmittance: bestPeak.transmittance,
-    absorbance: bestPeak.absorbance,
+    wavelength: wavelength,
+    transmittance: transmittance,
+    absorbance: absorbance,
     kind: getPeakKind(
-      bestPeak.transmittance,
+      transmittance,
       spectrum.minTransmittance,
       spectrum.maxTransmittance
     )
   });
-  return bestPeak;
+  return peak;
 }
 
 function getPeakKind(transmittance, minTransmittance, maxTransmittance) {
@@ -46,59 +44,4 @@ function getPeakKind(transmittance, minTransmittance, maxTransmittance) {
     return 'm';
   }
   return 'S';
-}
-
-function getClosest(spectrum, targetWavelength) {
-  let bestPeak = {
-    transmittance: spectrum.transmittance[0],
-    absorbance: spectrum.absorbance[0],
-    wavelength: spectrum.wavelength[0],
-    index: 0
-  };
-
-  let error = Math.abs(targetWavelength - bestPeak.wavelength);
-  for (let i = 1; i < spectrum.wavelength.length; i++) {
-    let newError = Math.abs(targetWavelength - spectrum.wavelength[i]);
-    if (newError < error) {
-      error = newError;
-      setBestPeak(spectrum, bestPeak, i);
-    }
-  }
-  return bestPeak;
-}
-
-function bestInRange(spectrum, bestPeak, targetWavelength, range) {
-  // we search the minimum based on wavelength +/- range
-  for (let i = 0; i < spectrum.wavelength.length; i++) {
-    if (Math.abs(spectrum.wavelength[i] - targetWavelength) <= range) {
-      if (spectrum.transmittance[i] < bestPeak.transmittance) {
-        setBestPeak(spectrum, bestPeak, i);
-      }
-    }
-  }
-}
-
-function findClosest(spectrum, bestPeak) {
-  let index = bestPeak.index;
-  let previousIndex;
-  while (index !== previousIndex) {
-    previousIndex = index;
-    if (index > 0 && spectrum.absorbance[index - 1] > bestPeak.absorbance) {
-      index--;
-      setBestPeak(spectrum, bestPeak, index);
-    } else if (
-      index < spectrum.wavelength.length - 1 &&
-      spectrum.absorbance[index + 1] > bestPeak.absorbance
-    ) {
-      index++;
-      setBestPeak(spectrum, bestPeak, index);
-    }
-  }
-}
-
-function setBestPeak(spectrum, bestPeak, index) {
-  bestPeak.index = index;
-  bestPeak.wavelength = spectrum.wavelength[index];
-  bestPeak.absorbance = spectrum.absorbance[index];
-  bestPeak.transmittance = spectrum.transmittance[index];
 }

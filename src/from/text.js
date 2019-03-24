@@ -1,6 +1,6 @@
 import { parseXY } from 'xy-parser';
 
-import { IRSpectrum } from '../IRSpectrum';
+import { Spectrum } from '../Spectrum';
 import { getKind, TRANSMITTANCE } from '../constants';
 
 /**
@@ -8,19 +8,19 @@ import { getKind, TRANSMITTANCE } from '../constants';
  * @param {string} text - String containing the data as CSV or TSV
  * @param {object} [options] - Options object for the parser
  * @param {string} [options.kind] - Absorbance or Transmisstance
- * @return {IRSpectrum} - New class element with the given data
+ * @return {Spectrum} - New class element with the given data
  */
 export function fromText(text, options = {}) {
   options = Object.assign({}, options, { arrayType: 'xxyy' });
   const data = parseXY(text, options);
   if (getKind(options.kind) === TRANSMITTANCE) {
-    return new IRSpectrum({
+    return new Spectrum({
       wavelength: data[0],
       transmittance: data[1],
       absorbance: []
     });
   } else {
-    return new IRSpectrum({
+    return new Spectrum({
       wavelength: data[0],
       transmisttance: [],
       absorbance: data[1]

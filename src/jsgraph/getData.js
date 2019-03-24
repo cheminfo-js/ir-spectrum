@@ -1,13 +1,13 @@
 import { ABSORBANCE, TRANSMITTANCE, PERCENT_TRANSMITTANCE } from '../constants';
 
-export function getData(irSpectrum) {
-  switch (irSpectrum.mode) {
+export function getData(spectrum) {
+  switch (spectrum.mode) {
     case ABSORBANCE:
-      return irSpectrum.getAbsorbance();
+      return spectrum.getAbsorbance();
     case TRANSMITTANCE:
-      return irSpectrum.getTransmittance();
+      return spectrum.getTransmittance();
     case PERCENT_TRANSMITTANCE:
-      return irSpectrum.getPercentTransmittance();
+      return spectrum.getPercentTransmittance();
     default:
       return {};
   }
