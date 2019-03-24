@@ -3,25 +3,25 @@ import { join } from 'path';
 
 import { fromText } from '..';
 
-import { IRSpectrum } from '../IRSpectrum';
+import { Spectrum } from '../Spectrum';
 
 test('Test load / save json', () => {
   let text = readFileSync(
     join(__dirname, '../../testFiles/simple.txt'),
     'utf8'
   );
-  let irSpectrum = fromText(text);
-  let json = irSpectrum.toJSON();
+  let spectrum = fromText(text);
+  let json = spectrum.toJSON();
 
-  expect(irSpectrum.getTransmittance()).toStrictEqual({
+  expect(spectrum.getTransmittance()).toStrictEqual({
     x: [1, 2, 3],
     y: [2, 3, 2]
   });
-  expect(irSpectrum.getPercentTransmittance()).toStrictEqual({
+  expect(spectrum.getPercentTransmittance()).toStrictEqual({
     x: [1, 2, 3],
     y: [200, 300, 200]
   });
-  expect(irSpectrum.getAbsorbance()).toStrictEqual({
+  expect(spectrum.getAbsorbance()).toStrictEqual({
     x: [1, 2, 3],
     y: [-0.3010299956639812, -0.47712125471966244, -0.3010299956639812]
   });
@@ -29,7 +29,7 @@ test('Test load / save json', () => {
     wavelength: [1, 2, 3],
     transmittance: [2, 3, 2]
   });
-  let irSpectrum2 = new IRSpectrum(json);
-  let json2 = irSpectrum2.toJSON();
+  let spectrum2 = new Spectrum(json);
+  let json2 = spectrum2.toJSON();
   expect(json).toStrictEqual(json2);
 });

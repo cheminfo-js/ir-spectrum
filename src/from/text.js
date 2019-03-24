@@ -1,6 +1,7 @@
 import { parseXY } from 'xy-parser';
 
-import { IRSpectrum, getKind, TRANSMITTANCE } from '../IRSpectrum';
+import { IRSpectrum } from '../IRSpectrum';
+import { getKind, TRANSMITTANCE } from '../constants';
 
 /**
  * Creates a new Chromatogram element based in a Txt string

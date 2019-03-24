@@ -1,6 +1,7 @@
 import { convert as converter } from 'jcampconverter';
 
-import { IRSpectrum, getKind, TRANSMITTANCE } from '..';
+import { IRSpectrum } from '../IRSpectrum';
+import { getKind, TRANSMITTANCE } from '../constants';
 /**
  * Creates a new Chromatogram element based in a JCAMP string
  * @param {string} jcamp - String containing the JCAMP data

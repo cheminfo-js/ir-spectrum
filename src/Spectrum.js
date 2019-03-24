@@ -1,10 +1,11 @@
-import { checkServerIdentity } from 'tls';
-
 import min from 'ml-array-min';
 import max from 'ml-array-max';
 
+import { TRANSMITTANCE, ABSORBANCE, PERCENT_TRANSMITTANCE } from './constants';
 import { toJSON } from './to/json';
-import { toAnnotations } from './to/annotations';
+import { getAnnotations } from './jsgraph/getAnnotations';
+import { getData } from './jsgraph/getData';
+import { addPeak } from './addPeak';
 
 /**
  * Class allowing manipulate one IR spectrum
@@ -14,11 +15,12 @@ import { toAnnotations } from './to/annotations';
  * @param {Array} [json.y=[]] - y values
  * @param {integer} [json.kind=IRSpectrum.TRANSMITTANCE] - either IRSpectrum.ABSORBANCE or IRSpectrum.TRANSMITTANCE
  */
-export class IRSpectrum {
+export class Spectrum {
   constructor(json = {}) {
     this.wavelength = json.wavelength || [];
     this.absorbance = json.absorbance || [];
     this.transmittance = json.transmittance || [];
+    this.mode = PERCENT_TRANSMITTANCE;
     this.peaks = [];
     check(this);
   }
@@ -31,37 +33,17 @@ export class IRSpectrum {
     this.peaks = peaks;
   }
 
+  setMode(mode) {
+    if (mode < 1 || mode > 3) {
+      throw new Error(
+        'Mode should be either 1 (absorbance), 2 (transmittance) or 3 (percent transmittance)'
+      );
+    }
+    this.mode = mode;
+  }
+
   addPeak(targetWavelength, options = {}) {
-    const { range = 10 } = options;
-    let transmittance = Number.MAX_VALUE;
-    let absorbance = Number.MIN_VALUE;
-    let bestWavelength;
-    // we search the minimum based on wavelength +/- range
-    for (let i = 0; i < this.wavelength.length; i++) {
-      if (this.wavelength[i] - targetWavelength <= range) {
-        if (this.transmittance[i] < transmittance) {
-          transmittance = this.transmittance[i];
-          absorbance = this.absorbance[i];
-          bestWavelength = this.wavelength[i];
-        }
-      }
-    }
-    if (bestWavelength) {
-      // check if it does not exists yet
-      for (let peak of this.peaks) {
-        if (peak.wavelength === bestWavelength) return;
-      }
-      this.peaks.push({
-        wavelength: bestWavelength,
-        transmittance,
-        absorbance,
-        kind: getPeakKind(
-          transmittance,
-          this.minTransmittance,
-          this.maxTransmittance
-        )
-      });
-    }
+    addPeak(this, targetWavelength, options);
   }
 
   getAbsorbance() {
@@ -79,26 +61,28 @@ export class IRSpectrum {
       y: data.y.map((transmittance) => transmittance * 100)
     };
   }
-}
 
-export const ABSORBANCE = 1;
-export const TRANSMITTANCE = 2;
-
-export function getKind(kind = '') {
-  if (typeof kind === 'number') {
-    if (kind < 1 || kind > 2) {
-      throw new Error('kind should either be 1 or 2');
+  getYLabel() {
+    switch (this.mode) {
+      case ABSORBANCE:
+        return 'Absorbance';
+      case TRANSMITTANCE:
+        return 'Transmittance';
+      case PERCENT_TRANSMITTANCE:
+        return 'Transmittance [%]';
+      default:
+        return '';
     }
-    return kind;
   }
-  if (kind.match(/abs/i)) {
-    return ABSORBANCE;
-  }
-  return TRANSMITTANCE;
 }
 
-IRSpectrum.prototype.toJSON = toJSON;
-IRSpectrum.prototype.toAnnotations = toAnnotations;
+Spectrum.prototype.toJSON = toJSON;
+Spectrum.prototype.getAnnotations = function (options) {
+  return getAnnotations(this, options);
+};
+Spectrum.prototype.getData = function (options) {
+  return getData(this, options);
+};
 
 function check(irSpectrum) {
   if (
@@ -137,15 +121,4 @@ function check(irSpectrum) {
   if (irSpectrum.transmittance.length > 0) {
     irSpectrum.maxTransmittance = max(irSpectrum.transmittance);
   }
-}
-
-function getPeakKind(transmittance, minTransmittance, maxTransmittance) {
-  var position =
-    (maxTransmittance - transmittance) / (maxTransmittance - minTransmittance);
-  if (position < 0.33) {
-    return 'w';
-  } else if (position < 0.66) {
-    return 'm';
-  }
-  return 'S';
 }
