@@ -47,6 +47,8 @@
     "jcampconverter": "^3.0.0",
     "ml-array-max": "^1.1.1",
     "ml-array-min": "^1.1.1",
+    "ml-array-utils": "^0.4.0",
+    "ml-array-xy-equally-spaced": "^0.2.4",
     "ml-gsd": "^2.0.5",
     "xy-parser": "^2.2.2"
   }
