@@ -15,8 +15,8 @@ test('Load set of data', () => {
   for (let file of files) {
     let jcamp = readFileSync(join(__dirname, testFilesDir, file), 'utf8');
     let spectrum = fromJcamp(jcamp);
-    spectra.addSpectrum(file.replace('.jdx', ''), spectrum);
+    spectra.addSpectrum(spectrum, file.replace('.jdx', ''));
   }
 
-  console.log(spectra);
+  expect(spectra.data).toHaveLength(45);
 });

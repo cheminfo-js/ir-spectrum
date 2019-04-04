@@ -1,5 +1,3 @@
-import { exportAllDeclaration } from '@babel/types';
-
 import { calculatePCA } from '../calculatePCA';
 
 test('getPCA', () => {

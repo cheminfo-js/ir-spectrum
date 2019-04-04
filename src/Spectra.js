@@ -7,7 +7,7 @@ export class Spectra {
     this.numberOfPoints =
       options.numberOfPoints === undefined ? 1000 : options.numberOfPoints;
     this.applySNV = options.applySNV === undefined ? true : options.applySNV;
-    this.spectra = [];
+    this.data = [];
     this.cache = {};
   }
 
@@ -20,8 +20,8 @@ export class Spectra {
   addSpectrum(spectrum, id, meta = {}) {
     this.cache = {};
     let index = this.getSpectrumIndex(id);
-    if (index === undefined) index = this.spectra.length;
-    this.spectra[index] = {
+    if (index === undefined) index = this.data.length;
+    this.data[index] = {
       normalized: spectrum.getNormalized(spectrum, {
         from: this.from,
         to: this.to,
@@ -35,15 +35,22 @@ export class Spectra {
 
   getSpectrumIndex(id) {
     if (!id) return undefined;
-    for (let i = 0; i < this.spectra.length; i++) {
-      let spectrum = this.spectra[i];
+    for (let i = 0; i < this.data.length; i++) {
+      let spectrum = this.data[i];
       if (spectrum.id === id) return i;
     }
     return undefined;
   }
 
-  getScorePlot() {
-    let pca = calculatePCA();
-    return pca.predict(pca.matrix, { nComponents: 2 });
+  getNormalizedData() {
+    let matrix = [];
+    let meta = [];
+    let ids = [];
+    for (let datum of this.data) {
+      ids.push(datum.id);
+      matrix.push(datum.normalized);
+      meta.push(datum.meta);
+    }
+    return { ids, matrix, meta };
   }
 }
