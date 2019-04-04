@@ -1,4 +1,4 @@
-import { fromText } from '..';
+import { fromText } from '../..';
 
 let text = `
 1 0.7

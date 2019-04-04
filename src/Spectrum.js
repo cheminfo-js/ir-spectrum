@@ -5,8 +5,10 @@ import { TRANSMITTANCE, ABSORBANCE, PERCENT_TRANSMITTANCE } from './constants';
 import { toJSON } from './to/json';
 import { getAnnotations } from './jsgraph/getAnnotations';
 import { getData } from './jsgraph/getData';
-import { peakPicking } from './peakPicking';
-import { autoPeakPicking } from './autoPeakPicking';
+import { peakPicking } from './spectrum/peakPicking';
+import { autoPeakPicking } from './spectrum/autoPeakPicking';
+import { getNormalized } from './spectrum/getNormalized';
+
 /**
  * Class allowing manipulate one IR spectrum
  * @class spectrum
@@ -85,6 +87,9 @@ Spectrum.prototype.getData = function (options) {
 };
 Spectrum.prototype.autoPeakPicking = function (options) {
   return autoPeakPicking(this, options);
+};
+Spectrum.prototype.getNormalized = function (options) {
+  return getNormalized(this, options);
 };
 
 function check(spectrum) {
