@@ -19,4 +19,6 @@ test('Load set of data', () => {
   }
 
   expect(spectra.data).toHaveLength(45);
+
+  expect(spectra.getNormalizedData()).toMatchSnapshot();
 });
