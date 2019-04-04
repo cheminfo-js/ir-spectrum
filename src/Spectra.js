@@ -1,5 +1,3 @@
-import { calculatePCA } from './spectra/calculatePCA';
-
 export class Spectra {
   constructor(options = {}) {
     this.from = options.from === undefined ? 800 : options.from;
