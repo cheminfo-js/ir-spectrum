@@ -41,14 +41,16 @@ export class Spectra {
   }
 
   getNormalizedData() {
+    if (!this.data || !this.data[0]) return {};
     let matrix = [];
     let meta = [];
     let ids = [];
     for (let datum of this.data) {
       ids.push(datum.id);
-      matrix.push(datum.normalized);
+      matrix.push(datum.normalized.y);
       meta.push(datum.meta);
     }
-    return { ids, matrix, meta };
+    let x = this.data[0].normalized.x;
+    return { ids, matrix, meta, x };
   }
 }
