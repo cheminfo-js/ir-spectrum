@@ -5,7 +5,7 @@ export function getNormalized(spectrum, options = {}) {
   const {
     from = 800,
     to = 4000,
-    numberOfPoints = 1000,
+    numberOfPoints = 1024,
     applySNV = true
   } = options;
   let y = applySNV ? Util.SNV(spectrum.absorbance) : spectrum.absorbance;
