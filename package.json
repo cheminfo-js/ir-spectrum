@@ -49,7 +49,7 @@
     "ml-array-max": "^1.1.1",
     "ml-array-min": "^1.1.1",
     "ml-array-utils": "^0.4.0",
-    "ml-array-xy-equally-spaced": "^0.2.4",
+    "ml-array-xy-equally-spaced": "^0.2.5",
     "ml-gsd": "^2.0.5",
     "ml-pca": "^2.1.0",
     "xy-parser": "^2.2.2"

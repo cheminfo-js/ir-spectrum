@@ -1,6 +1,13 @@
 import { ABSORBANCE, TRANSMITTANCE, PERCENT_TRANSMITTANCE } from '../constants';
 
-export function getData(spectrum) {
+/**
+ *
+ * @param {*} spectrum
+ * @param {object} [options={}]
+ *
+ */
+
+export function getData(spectrum, options = []) {
   switch (spectrum.mode) {
     case ABSORBANCE:
       return spectrum.getAbsorbance();
