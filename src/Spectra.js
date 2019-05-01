@@ -113,4 +113,3 @@ export class Spectra {
   }
 }
 
-Spectra.getYLabel = getYLabel;
