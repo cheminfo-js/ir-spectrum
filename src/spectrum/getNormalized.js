@@ -7,10 +7,11 @@ export function getNormalized(spectrum, options = {}) {
     to = 4000,
     numberOfPoints = 1024,
     applySNV = true
+    exclusions = []
   } = options;
   let y = applySNV ? Util.SNV(spectrum.absorbance) : spectrum.absorbance;
   return equallySpaced(
     { x: spectrum.wavelength, y },
-    { from, to, numberOfPoints }
+    { from, to, numberOfPoints, exclusions }
   );
 }
