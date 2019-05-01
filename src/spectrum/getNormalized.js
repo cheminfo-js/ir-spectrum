@@ -1,17 +1,31 @@
 import equallySpaced from 'ml-array-xy-equally-spaced';
 import Util from 'ml-array-utils';
+import hash from 'object-hash';
 
 export function getNormalized(spectrum, options = {}) {
+  let optionsHash = hash(options);
+
+  if (!spectrum.cache) spectrum.cache = {};
+  if (!spectrum.cache.normalized) spectrum.cache.normalized = {};
+  if (spectrum.cache.normalized.hash === optionsHash)
+    return spectrum.cache.normalized.value;
   const {
     from = 800,
     to = 4000,
     numberOfPoints = 1024,
-    applySNV = true
+    applySNV = true,
     exclusions = []
   } = options;
+
   let y = applySNV ? Util.SNV(spectrum.absorbance) : spectrum.absorbance;
-  return equallySpaced(
+  let result = equallySpaced(
     { x: spectrum.wavelength, y },
     { from, to, numberOfPoints, exclusions }
   );
+  spectrum.cache.normalized = {
+    hash: optionsHash,
+    value: result
+  };
+
+  return result;
 }

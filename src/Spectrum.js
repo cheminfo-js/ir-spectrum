@@ -24,6 +24,7 @@ export class Spectrum {
     this.transmittance = json.transmittance || [];
     this.mode = PERCENT_TRANSMITTANCE;
     this.peaks = [];
+    this.clearCache();
     check(this);
   }
 
@@ -60,8 +61,12 @@ export class Spectrum {
     let data = this.getTransmittance();
     return {
       x: data.x,
-      y: data.y.map((transmittance) => transmittance * 100)
+      y: data.y.map(transmittance => transmittance * 100)
     };
+  }
+
+  clearCache() {
+    this.cache = { normalized: { hash: '' } };
   }
 
   getYLabel() {
@@ -79,29 +84,29 @@ export class Spectrum {
 }
 
 Spectrum.prototype.toJSON = toJSON;
-Spectrum.prototype.getAnnotations = function (options) {
+Spectrum.prototype.getAnnotations = function(options) {
   return getAnnotations(this, options);
 };
-Spectrum.prototype.getData = function (options) {
+Spectrum.prototype.getData = function(options) {
   return getData(this, options);
 };
-Spectrum.prototype.autoPeakPicking = function (options) {
+Spectrum.prototype.autoPeakPicking = function(options) {
   return autoPeakPicking(this, options);
 };
-Spectrum.prototype.getNormalized = function (options) {
+Spectrum.prototype.getNormalized = function(options) {
   return getNormalized(this, options);
 };
 
 function check(spectrum) {
   if (spectrum.transmittance.length > 0 && spectrum.absorbance.length === 0) {
     spectrum.absorbance = spectrum.transmittance.map(
-      (transmittance) => -Math.log10(transmittance)
+      transmittance => -Math.log10(transmittance)
     );
   }
 
   if (spectrum.absorbance.length > 0 && spectrum.transmittance.length === 0) {
     spectrum.transmittance = spectrum.absorbance.map(
-      (absorbance) => 10 ** -absorbance
+      absorbance => 10 ** -absorbance
     );
   }
 

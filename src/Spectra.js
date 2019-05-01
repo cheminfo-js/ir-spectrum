@@ -4,11 +4,15 @@ import { fromJcamp } from './index.js';
 
 export class Spectra {
   constructor(options = {}) {
-    this.from = options.from === undefined ? 800 : options.from;
-    this.to = options.to === undefined ? 4000 : options.to;
-    this.numberOfPoints =
-      options.numberOfPoints === undefined ? 1024 : options.numberOfPoints;
-    this.applySNV = options.applySNV === undefined ? true : options.applySNV;
+    this.normalizationOptions =
+      options.normalization === undefined
+        ? {
+            from: 800,
+            to: 4000,
+            numberOfPoints: 1024,
+            applySNV: true
+          }
+        : options.normalization;
     this.data = [];
     this.mode = PERCENT_TRANSMITTANCE;
   }
@@ -24,11 +28,7 @@ export class Spectra {
     let index = this.getSpectrumIndex(id);
     if (index === undefined) index = this.data.length;
     this.data[index] = {
-      normalized: spectrum.getNormalized(spectrum, {
-        from: this.from,
-        to: this.to,
-        numberOfPoints: this.numberOfPoints
-      }),
+      normalized: spectrum.getNormalized(this.normalizationOptions),
       spectrum,
       id,
       meta
