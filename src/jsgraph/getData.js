@@ -7,8 +7,9 @@ import { ABSORBANCE, TRANSMITTANCE, PERCENT_TRANSMITTANCE } from '../constants';
  *
  */
 
-export function getData(spectrum, options = []) {
-  switch (spectrum.mode) {
+export function getData(spectrum, options = {}) {
+  let mode = options.mode || spectrum.mode;
+  switch (mode) {
     case ABSORBANCE:
       return spectrum.getAbsorbance();
     case TRANSMITTANCE:

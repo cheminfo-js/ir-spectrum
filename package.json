@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@babel/types": "^7.4.0",
+    "hash-it": "^4.0.4",
     "jcampconverter": "^3.0.1",
     "ml-array-max": "^1.1.1",
     "ml-array-min": "^1.1.1",
