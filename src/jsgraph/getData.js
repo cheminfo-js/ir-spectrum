@@ -1,5 +1,6 @@
 import { ABSORBANCE, TRANSMITTANCE, PERCENT_TRANSMITTANCE } from '../constants';
 
+import filterX from 'ml-array-xy-filter-x';
 /**
  *
  * @param {*} spectrum
@@ -9,14 +10,17 @@ import { ABSORBANCE, TRANSMITTANCE, PERCENT_TRANSMITTANCE } from '../constants';
 
 export function getData(spectrum, options = {}) {
   let mode = options.mode || spectrum.mode;
+  const { filter } = options;
+  let data = {};
   switch (mode) {
     case ABSORBANCE:
-      return spectrum.getAbsorbance();
+      data = spectrum.getAbsorbance();
     case TRANSMITTANCE:
-      return spectrum.getTransmittance();
+      data = spectrum.getTransmittance();
     case PERCENT_TRANSMITTANCE:
-      return spectrum.getPercentTransmittance();
+      data = spectrum.getPercentTransmittance();
     default:
-      return {};
   }
+  if (!filter) return DataCue;
+  return filterX(data, filter);
 }
