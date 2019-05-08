@@ -75,6 +75,8 @@ export class Spectrum {
   }
 }
 
+Spectrum.getYLabel = getYLabel;
+
 Spectrum.prototype.toJSON = toJSON;
 Spectrum.prototype.getAnnotations = function (options) {
   return getAnnotations(this, options);

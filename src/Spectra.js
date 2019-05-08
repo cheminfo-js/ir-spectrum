@@ -11,9 +11,15 @@ export class Spectra {
           from: 800,
           to: 4000,
           numberOfPoints: 1024,
-          applySNV: true
+          applySNV: true,
+          exclusions: []
         }
         : options.normalization;
+    if (Array.isArray(this.normalizationOptions.exclusions)) {
+      this.normalizationOptions.exclusions = this.normalizationOptions.exclusions.filter(
+        (exclusion) => !exclusion.ignore
+      );
+    }
     this.data = [];
     this.mode = PERCENT_TRANSMITTANCE;
   }
@@ -84,14 +90,15 @@ export class Spectra {
   }
 
   getChart(options = {}) {
-    const { filter = {}, mode = this.mode } = options;
+    console.log({ options });
+    const { ids, filter = {}, mode = this.mode } = options;
     let chart = {
       title: 'IR spectra superimposition',
       data: []
     };
     for (let datum of this.data) {
-      if (!filter.ids || filter.ids.includes(datum.id)) {
-        let data = datum.spectrum.getData({ mode });
+      if (!ids || ids.includes(datum.id)) {
+        let data = datum.spectrum.getData({ mode, filter });
 
         data.styles = {
           unselected: {
@@ -112,4 +119,3 @@ export class Spectra {
     return chart;
   }
 }
-
