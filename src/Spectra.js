@@ -1,5 +1,4 @@
 import { PERCENT_TRANSMITTANCE } from './constants';
-import { getYLabel } from './util/getYLabel';
 
 import { fromJcamp } from './index.js';
 
@@ -8,12 +7,18 @@ export class Spectra {
     this.normalizationOptions =
       options.normalization === undefined
         ? {
-            from: 800,
-            to: 4000,
-            numberOfPoints: 1024,
-            applySNV: true
-          }
+          from: 800,
+          to: 4000,
+          numberOfPoints: 1024,
+          applySNV: true,
+          exclusions: []
+        }
         : options.normalization;
+    if (Array.isArray(this.normalizationOptions.exclusions)) {
+      this.normalizationOptions.exclusions = this.normalizationOptions.exclusions.filter(
+        (exclusion) => !exclusion.ignore
+      );
+    }
     this.data = [];
     this.mode = PERCENT_TRANSMITTANCE;
   }
@@ -84,7 +89,7 @@ export class Spectra {
   }
 
   getChart(options = {}) {
-    const { filter, ids, mode = this.mode } = options;
+    const { ids, filter = {}, mode = this.mode } = options;
     let chart = {
       title: 'IR spectra superimposition',
       data: []

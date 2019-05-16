@@ -1,4 +1,8 @@
+import { toBeDeepCloseTo, toMatchCloseTo } from 'jest-matcher-deep-close-to';
+
 import { fromText } from '../..';
+
+expect.extend({ toBeDeepCloseTo, toMatchCloseTo });
 
 test('Parse a text', () => {
   const text = `
@@ -30,6 +34,6 @@ test('Parse a text with options', () => {
     kind: 'absorbance'
   });
   expect(spectrum.wavelength).toStrictEqual([2, 3, 4]);
-  expect(spectrum.transmittance).toStrictEqual([0.001, 0.0001, 0.00001]);
+  expect(spectrum.transmittance).toBeDeepCloseTo([0.001, 0.0001, 0.00001], 10);
   expect(spectrum.absorbance).toStrictEqual([3, 4, 5]);
 });
