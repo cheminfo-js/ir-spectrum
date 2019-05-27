@@ -1,4 +1,5 @@
 import { convert as converter } from 'jcampconverter';
+import sortX from 'ml-array-xy-sort-x';
 
 import { Spectrum } from '../Spectrum';
 import { getKind, TRANSMITTANCE } from '../constants';
@@ -10,6 +11,7 @@ import { getKind, TRANSMITTANCE } from '../constants';
 export function fromJcamp(jcamp) {
   const data = converter(jcamp, { xy: true });
   let spectrum = data.spectra[0].data[0];
+  spectrum = sortX(spectrum);
   if (getKind(data.spectra[0].yUnit) === TRANSMITTANCE) {
     return new Spectrum({
       wavelength: spectrum.x,

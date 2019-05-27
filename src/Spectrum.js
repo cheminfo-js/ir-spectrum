@@ -1,7 +1,7 @@
 import min from 'ml-array-min';
 import max from 'ml-array-max';
 
-import { TRANSMITTANCE, ABSORBANCE, PERCENT_TRANSMITTANCE } from './constants';
+import { PERCENT_TRANSMITTANCE } from './constants';
 import { toJSON } from './to/json';
 import { getAnnotations } from './jsgraph/getAnnotations';
 import { getData } from './jsgraph/getData';

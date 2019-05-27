@@ -7,7 +7,7 @@ import { Spectra } from '../Spectra';
 
 const testFilesDir = '../../testFiles/xtc';
 test('Load set of data', () => {
-  let files = readdirSync(join(__dirname, testFilesDir)).filter(file =>
+  let files = readdirSync(join(__dirname, testFilesDir)).filter((file) =>
     file.match(/0140|0189|0235/)
   );
   let spectra = new Spectra({
@@ -26,7 +26,7 @@ test('Load set of data', () => {
 
   expect(spectra.data).toHaveLength(45);
   let normalized = spectra.getNormalizedData();
-  expect(normalized.ids.length).toBe(45);
-  expect(normalized.matrix[0].length).toBe(16);
+  expect(normalized.ids).toHaveLength(45);
+  expect(normalized.matrix[0]).toHaveLength(16);
   expect(normalized).toMatchSnapshot();
 });

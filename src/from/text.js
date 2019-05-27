@@ -1,4 +1,5 @@
 import { parseXY } from 'xy-parser';
+import sortX from 'ml-array-xy-sort-x';
 
 import { Spectrum } from '../Spectrum';
 import { getKind, TRANSMITTANCE } from '../constants';
@@ -13,17 +14,18 @@ import { getKind, TRANSMITTANCE } from '../constants';
 export function fromText(text, options = {}) {
   options = Object.assign({}, options, { arrayType: 'xxyy' });
   const data = parseXY(text, options);
+  let spectrum = sortX({ x: data[0], y: data[1] });
   if (getKind(options.kind) === TRANSMITTANCE) {
     return new Spectrum({
-      wavelength: data[0],
-      transmittance: data[1],
+      wavelength: spectrum.x,
+      transmittance: spectrum.y,
       absorbance: []
     });
   } else {
     return new Spectrum({
-      wavelength: data[0],
+      wavelength: spectrum.x,
       transmisttance: [],
-      absorbance: data[1]
+      absorbance: spectrum.y
     });
   }
 }
