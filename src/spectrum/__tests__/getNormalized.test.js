@@ -13,7 +13,8 @@ describe('getNormalized', () => {
         from: 1,
         to: 9,
         numberOfPoints: 5,
-        applySNV: false
+        centerMean: false,
+        scaleSD: false
       }
     );
 

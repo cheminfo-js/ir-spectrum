@@ -10,7 +10,8 @@ export class Spectra {
           from: 800,
           to: 4000,
           numberOfPoints: 1024,
-          applySNV: true,
+          centerMean: true,
+          scaleSD: true,
           exclusions: []
         }
         : options.normalization;
