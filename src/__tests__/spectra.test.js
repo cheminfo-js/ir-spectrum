@@ -6,7 +6,7 @@ import { fromJcamp } from '..';
 import { Spectra } from '../Spectra';
 
 const testFilesDir = '../../testFiles/xtc';
-test.only('Load set of data', () => {
+test('Load set of data', () => {
   let files = readdirSync(join(__dirname, testFilesDir)).filter((file) =>
     file.match(/0140|0189|0235/)
   );
