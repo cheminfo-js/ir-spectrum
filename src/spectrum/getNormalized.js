@@ -1,5 +1,4 @@
 import equallySpaced from 'ml-array-xy-equally-spaced';
-import Util from 'ml-array-utils';
 import hash from 'hash-it';
 import Stat from 'ml-stat/array';
 
