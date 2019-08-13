@@ -14,7 +14,7 @@ export class Spectra {
           scaleSD: true,
           exclusions: []
         }
-        : options.normalization;
+        : JSON.parse(JSON.stringify(options.normalization));
     if (this.normalizationOptions.from > this.normalizationOptions.to) {
       [this.normalizationOptions.from, this.normalizationOptions.to] = [
         this.normalizationOptions.to,
@@ -23,7 +23,7 @@ export class Spectra {
     }
     if (Array.isArray(this.normalizationOptions.exclusions)) {
       this.normalizationOptions.exclusions = this.normalizationOptions.exclusions.filter(
-        (exclusion) => !exclusion.ignore
+        (exclusion) => exclusion && !exclusion.ignore
       );
     }
     this.data = [];
