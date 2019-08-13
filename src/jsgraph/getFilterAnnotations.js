@@ -1,7 +1,7 @@
 export function getFilterAnnotations(filter = {}) {
   let { exclusions = [] } = filter;
   let annotations = [];
-  exclusions = exclusions.filter((exclusion) => !exclusion.ignore);
+  exclusions = exclusions.filter((exclusion) => exclusion && !exclusion.ignore);
   annotations = exclusions.map((exclusion) => {
     var annotation = {
       type: 'rect',
