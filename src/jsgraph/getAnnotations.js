@@ -34,19 +34,36 @@ export function getAnnotations(spectrum, options = {}) {
 }
 
 function annotationTransmittance(annotation, peak, factor = 1) {
-  annotation.label = [
-    {
-      text: peak.kind,
-      size: '18px',
-      anchor: 'middle',
-      color: 'red',
-      position: {
-        x: peak.wavelength,
-        y: peak.transmittance * factor,
-        dy: '23px'
-      }
+  let labels = [];
+  let line = 0;
+
+  labels.push({
+    text: peak.kind,
+    size: '18px',
+    anchor: 'middle',
+    color: 'red',
+    position: {
+      x: peak.wavelength,
+      y: peak.transmittance * factor,
+      dy: `${23 + line * 14}px`
     }
-  ];
+  });
+  line++;
+
+  labels.push({
+    text: peak.assignment,
+    size: '18px',
+    anchor: 'middle',
+    color: 'darkred',
+    position: {
+      x: peak.wavelength,
+      y: peak.transmittance * factor,
+      dy: `${23 + line * 14}px`
+    }
+  });
+  line++;
+
+  annotation.labels = labels;
   annotation.position = [
     {
       x: peak.wavelength,
@@ -64,19 +81,37 @@ function annotationTransmittance(annotation, peak, factor = 1) {
 }
 
 function annotationAbsorbance(annotation, peak) {
-  annotation.label = [
-    {
-      text: peak.kind,
-      size: '18px',
-      anchor: 'middle',
-      color: 'red',
-      position: {
-        x: peak.wavelength,
-        y: peak.absorbance,
-        dy: '-15px'
-      }
+  let labels = [];
+  let line = 0;
+
+  labels.push({
+    text: peak.kind,
+    size: '18px',
+    anchor: 'middle',
+    color: 'red',
+    position: {
+      x: peak.wavelength,
+      y: peak.absorbance,
+      dy: `${-15 - line * 14}px`
     }
-  ];
+  });
+  line++;
+
+  labels.push({
+    text: peak.assignment,
+    size: '18px',
+    anchor: 'middle',
+    color: 'darkred',
+    position: {
+      x: peak.wavelength,
+      y: peak.absorbance,
+      dy: `${-15 - line * 14}px`
+    }
+  });
+  line++;
+
+  annotation.labels = labels;
+
   annotation.position = [
     {
       x: peak.wavelength,
