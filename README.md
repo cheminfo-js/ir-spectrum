@@ -1,3 +1,6 @@
+## This project was archived. Future developements are done on cheminfo/ir-spectrum
+
+
 # ir-spectrum
 
 [![NPM version][npm-image]][npm-url]
